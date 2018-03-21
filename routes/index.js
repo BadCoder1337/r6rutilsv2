@@ -10,13 +10,13 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/login', function(req, res) {
-  res.redirect(`https://discordapp.com/oauth2/authorize?client_id=${bot.Discord.OAuth2Application.id}&scope=identify&response_type=code&scope=guilds%20identify&redirect_uri=${callback_uri}`);
+  res.redirect(`https://discordapp.com/oauth2/authorize?client_id=${bot.Client.user.id}&scope=identify&response_type=code&scope=guilds%20identify&redirect_uri=${callback_uri}`);
 });
 
 router.get('/auth', async function(req, res) {
   if (!req.query.code) throw new Error('NoCodeProvided');
   var code = req.query.code;
-  var creds = btoa(`${bot.Discord.OAuth2Application.id}:${bot.Discord.OAuth2Application.secret}`);
+  var creds = btoa(`${bot.Client.user.id}:${process.env.DISCORD_SECRET}`);
   var response = await fetch(`https://discordapp.com/api/oauth2/token?grant_type=authorization_code&code=${code}&redirect_uri=${callback_uri}`,
   {
     method: 'POST',
