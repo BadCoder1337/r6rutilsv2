@@ -3,6 +3,7 @@ var bot = require('../lib/discord');
 var router = express.Router();
 var callback_uri = encodeURIComponent('https://r6rutilsv2.herokuapp.com/auth');
 var btoa = require('btoa');
+var fetch = require('node-fetch');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
