@@ -9,7 +9,7 @@ var index = require('./routes/index');
 var user = require('./routes/user');
 var guild = require('./routes/guild');
 
-var bot = require('./discord');
+var bot = require('./lib/discord');
 
 var app = express();
 
