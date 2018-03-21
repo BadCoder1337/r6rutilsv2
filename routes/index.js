@@ -10,7 +10,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/login', function(req, res) {
-  res.redirect(`https://discordapp.com/oauth2/authorize?client_id=${bot.Client.user.id}&scope=identify&response_type=code&scope=guilds%20identify&redirect_uri=${callback_uri}`);
+  res.redirect(`https://discordapp.com/oauth2/authorize?client_id=${bot.Client.user.id}&response_type=code&scope=guilds%20identify&redirect_uri=${callback_uri}`);
 });
 
 router.get('/auth', async function(req, res) {
