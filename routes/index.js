@@ -29,8 +29,8 @@ router.get('/auth', async function(req, res) {
     await db.hsetAsync('user_'+json.id, 'token', json.access_token);
     res.redirect(`/user/`);
   } catch(err) {
+    res.send(err);
     console.log(err);
-    res.status(500);
   }
 });
 

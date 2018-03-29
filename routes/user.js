@@ -22,7 +22,7 @@ router.get('/', async function(req, res, next) {
     let nick = await r6db.getName(dbUser.genome);
     res.send(commonGuilds+'\n'+nick);
   } catch (err) {
-    throw err;
+    res.send(err);
   }
   //res.send('respond with a resource');
 });
