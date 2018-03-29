@@ -1,5 +1,6 @@
 var express = require('express');
 var bot = require('../lib/discord');
+var db = require('../lib/db');
 var router = express.Router();
 var callback_uri = encodeURIComponent('https://r6rutilsv2.herokuapp.com/auth');
 var btoa = require('btoa');
@@ -19,10 +20,14 @@ router.get('/auth', async function(req, res) {
     if (!req.query.code) throw new Error('NoCodeProvided');
     var code = req.query.code;
     var creds = btoa(`${bot.Client.user.id}:${process.env.DISCORD_SECRET}`);
-    var response = await fetch(`https://discordapp.com/api/oauth2/token?grant_type=authorization_code&code=${code}&redirect_uri=${callback_uri}`, {method: 'POST', headers: {Authorization: `Basic ${creds}`}});
+    let response = await fetch(`https://discordapp.com/api/oauth2/token?grant_type=authorization_code&code=${code}&redirect_uri=${callback_uri}`, {method: 'POST', headers: {Authorization: `Basic ${creds}`}});
     var json = await response.json();
     console.log(json);
-    res.redirect(`/user/?token=${json.access_token}`);
+    res.cookie('token', json.access_token);
+    responce = await fetch(`http://discordapp.com/api/users/@me`, {method: 'GET', headers: {Authorization: `Bearer ${json.access_token}`}});
+    var user = await response.json();
+    await db.hsetAsync('user_'+json.id, 'token', json.access_token);
+    res.redirect(`/user/`);
   } catch(err) {
     console.log(err);
     res.status(500);
