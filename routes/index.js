@@ -24,8 +24,8 @@ router.get('/auth', async function(req, res) {
     var json = await response.json();
     console.log(json);
     res.cookie('token', json.access_token);
-    responce = await fetch(`http://discordapp.com/api/users/@me`, {method: 'GET', headers: {Authorization: `Bearer ${json.access_token}`}});
-    var user = await response.json();
+    let response2 = await fetch(`http://discordapp.com/api/users/@me`, {method: 'GET', headers: {Authorization: `Bearer ${json.access_token}`}});
+    var user = await response2.json();
     await db.hsetAsync('user_'+json.id, 'token', json.access_token);
     res.redirect(`/user/`);
   } catch(err) {
