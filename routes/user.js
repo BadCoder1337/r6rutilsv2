@@ -10,7 +10,7 @@ router.get('/', async function(req, res, next) {
   try {
     let response = await fetch(`http://discordapp.com/api/users/@me`, {method: 'GET', headers: {Authorization: `Bearer ${req.cookies.token}`}});
     var user = await response.json();
-    console.log('user: ', user);
+    //console.log('user: ', user);
     let response2 = await fetch(`http://discordapp.com/api/users/@me/guilds`, {method: 'GET', headers: {Authorization: `Bearer ${req.cookies.token}`}});
     var guilds = await response2.json();
     if (user.code === 0 || guilds.code ===0) {throw new Error('AuthError');}
