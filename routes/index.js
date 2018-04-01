@@ -8,14 +8,24 @@ var fetch = require('node-fetch');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  res.render('index', { alertMessage: '' });
 });
 
-router.get('/login', function(req, res) {
+router.get('/login', async function(req, res) {
+  var login_uri = `https://discordapp.com/oauth2/authorize?client_id=${bot.Client.user.id}&response_type=code&scope=guilds%20identify&redirect_uri=${callback_uri}`;
   if (req.query.nick) {
     res.cookie.firstNick = req.query.nick;
   }
-  res.redirect(`https://discordapp.com/oauth2/authorize?client_id=${bot.Client.user.id}&response_type=code&scope=guilds%20identify&redirect_uri=${callback_uri}`);
+  try {
+    let response = await fetch(`http://discordapp.com/api/users/@me`, {method: 'GET', headers: {Authorization: `Bearer ${req.cookies.token}`}});
+    let user = await response.json();
+    if (user.code === 0) {
+      throw new Error();
+    }
+    res.redirect('/user/');
+  } catch (err) {
+    res.redirect(login_uri);
+  }
 });
 
 router.get('/auth', async function(req, res) {
@@ -30,7 +40,7 @@ router.get('/auth', async function(req, res) {
     let response2 = await fetch(`http://discordapp.com/api/users/@me`, {method: 'GET', headers: {Authorization: `Bearer ${json.access_token}`}});
     var user = await response2.json();
     await db.hsetAsync('user_'+user.id, 'token', json.access_token);
-    res.redirect(`/user/`);
+    res.redirect('/user/');
   } catch(err) {
     res.send(err);
     console.log(err);

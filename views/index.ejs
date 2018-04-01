@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Landing Page - Start Bootstrap Theme</title>
+    <title>R6RUTILS</title>
 
     <!-- Bootstrap core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -30,10 +30,14 @@
     <!-- Navigation -->
     <nav class="navbar navbar-dark bg-dark static-top">
       <div class="container">
-        <a class="navbar-brand" href="#">R6RUTILS BOT</a>
+        <img class="navbar-brand" src="images/r6rutils.svg" alt="R6RUTILS" href="#">
         <a class="btn btn-primary" href="/login">Вход через Discord</a>
       </div>
     </nav>
+
+    <% if (alertMessage) { %>
+      <%- include('alert', {a: alertMessage}) %>
+    <% } %>
 
     <!-- Masthead -->
     <header class="masthead text-white text-center">
