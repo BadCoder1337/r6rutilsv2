@@ -14,12 +14,15 @@ router.get('/', async function(req, res, next) {
     var user = await response.json();
     let response2 = await fetch(`http://discordapp.com/api/users/@me/guilds`, {method: 'GET', headers: {Authorization: `Bearer ${req.cookies.token}`}});
     var guilds = await response2.json();
+    
     if (user.code === 0 || guilds.code === 0) {throw new Error('InvalidToken');}
     let commonGuilds = bot.Client.guilds.filterArray(e => {
       let m = e.member(bot.Client.users.find('id', user.id));
       return !!m;
     });
+
     if (commonGuilds.length == 0) {throw new Error('NoCommonGuilds')};
+    
     let dbUser = await db.hgetallAsync('user_'+user.id);
     if (!dbUser.genome) {
       res.send('Вы не ввели ник в Uplay');
@@ -27,6 +30,7 @@ router.get('/', async function(req, res, next) {
       let nick = await r6db.getName(dbUser.genome);
       res.send(commonGuilds+'\n'+nick);
     }
+    
   } catch (err) {
     //res.send(err);
     //console.log('ERROR '+err.stack);

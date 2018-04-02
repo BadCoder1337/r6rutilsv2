@@ -4,7 +4,10 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "test": "nodemon ./bin/www"
+    "test": "nodemon ./bin/www",
+    "off": "heroku ps:scale web=0 -a r6rutilsv2",
+    "on": "heroku ps:scale web=1 -a r6rutilsv2",
+    "logs": "heroku logs -a r6rutilsv2 --tail"
   },
   "dependencies": {
     "bluebird": "^3.5.1",

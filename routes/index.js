@@ -2,7 +2,7 @@ var express = require('express');
 var bot = require('../lib/discord');
 var db = require('../lib/db');
 var router = express.Router();
-var callback_uri = encodeURIComponent('https://r6rutilsv2.herokuapp.com/auth');
+var callback_uri = encodeURIComponent(process.env.CALLBACK_URI);
 var btoa = require('btoa');
 var fetch = require('node-fetch');
 
