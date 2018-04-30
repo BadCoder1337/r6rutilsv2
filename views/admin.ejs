@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title><%= title[0] %></title>
+    <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css">
+    <script src="/vendor/jquery/jquery.min.js"></script>
+    <script src="/vendor/tether.min.js"></script>
+    <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+    
+    <style>
+      body{
+        margin: 5%;
+      }
+      html {
+    font-size: 20px;
+    } 
+    </style>
+  </head>
+  <body>
+    <% if (alertMessage) { %>
+        <%- include('alert', {a: alertMessage}) %>
+    <% } %>
+
+    <% if(section.indexOf('invites')!=-1) { %>
+      <% console.log(2,guilds); %>
+      <%- include('form-invites', {guilds: guilds}) %>
+    <% } %>
+
+    <% if(section.indexOf('nick')!=-1) { %>
+      <%- include('form-nick', {nickname: nick}) %>
+    <% } %>
+
+    <% if(section.indexOf('roles')!=-1) { %>
+      <% guildSettings.forEach(e => { %>
+        <%- include('form-roles', {guildSettings: e}) %>
+      <% }) %>
+    <% } %>
+
+    <% if(section.indexOf('feedback')!=-1) { %>
+      <%- include('form-feedback') %>
+    <% } %>
+  </body>
+</html>

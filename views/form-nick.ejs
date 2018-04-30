@@ -1,0 +1,9 @@
+<h2><%= title[1] %></h2>
+    <form action="/user/nickname" method="post">
+    <div class="input-group mb-3">
+        <input name="nickname" type="text" class="form-control" placeholder="<%= nickname || 'ник в Uplay' %>" aria-describedby="basic-addon2">
+        <div class="input-group-append">
+          <button type="submit" class="btn btn-primary" type="button">Сохранить</button>
+        </div>
+      </div>
+    </form>
