@@ -1,6 +1,11 @@
 <h2><%= title[2]+' ('+guildSettings.guild.name+')' %></h2>
-<% var roles = guildSettings.guild.roles.array().sort((e1,e2) => { %>
-    <% return e1.calculatedPosition < e2.calculatedPosition; %>
+<% var roles = guildSettings.guild.roles.array().sort((a,b) => { %>
+  <% if (a.calculatedPosition < b.calculatedPosition) { %>
+    <% return -1; %>
+    <% } %>
+    <% if (a.calculatedPosition > b.calculatedPosition) { %>
+    <% return 1; %>
+    <% } %>
 <% }); %>
 <% var settings = guildSettings.settings; %>
 

@@ -42,7 +42,13 @@ router.post('/nickname', async function(req, res) {
 
     if (!req.body.nickname) {res.redirect('/user/'); return;}
 
+    let pastGenome = await db.hgetallAsync('user_'+user.id);
+    
     let genome = await r6db.getGenome(req.body.nickname);    
+
+    if (!pastGenome.genome) {
+      db.rpushAsync('cooldown', genome);
+    }
 
     await db.hsetAsync('user_'+user.id, 'genome', genome);
 
@@ -94,7 +100,7 @@ router.post('/roles', async function(req, res) {
 
     let guild = bot.Client.guilds.get(req.query.id);
 
-    if (guild.ownerID == user.id) {
+    if (guild.ownerID == user.id || user.id == process.env.SUPPORT_ID) {
       await db.hmsetAsync('guild_'+guild.id, req.body);
       res.redirect('/user/?m=succguild&n='+encodeURIComponent(guild.name))
     } else {
