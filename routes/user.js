@@ -47,7 +47,7 @@ router.post('/nickname', async function(req, res) {
     let genome = await r6db.getGenome(req.body.nickname);    
 
     if (!pastGenome.genome) {
-      db.rpushAsync('cooldown', genome);
+      db.rpushAsync('cooldown', user.id);
     }
 
     await db.hsetAsync('user_'+user.id, 'genome', genome);
