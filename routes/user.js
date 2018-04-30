@@ -138,7 +138,6 @@ router.get('/', async function(req, res, next) {
         if (e.instant_invite) {
           servers.names.push(e.name);
           servers.links.push(e.instant_invite);
-          console.log(servers);
         }
       });    
       res.render('admin', {
@@ -146,7 +145,7 @@ router.get('/', async function(req, res, next) {
         section: ['invites'],
         guilds: servers,
         alertMessage: {title: 'Вас нет ни на одном сервере', message: 'Доступные серверы перечислены ниже', type: 'danger'}
-      });};
+      }); return;};
 
     var render = {
       title: ['Настройки', 'Изменить никнейм', 'Настроить бота', 'Написать в поддержку'],
