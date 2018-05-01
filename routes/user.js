@@ -150,19 +150,19 @@ router.get('/', async function(req, res, next) {
         title: ['Настройки'],
         section: ['invites'],
         guilds: servers,
-        alertMessage: {title: 'Вас нет ни на одном сервере', message: 'Доступные серверы перечислены ниже', type: 'danger'}
+        alertMessages: [{title: user.username+' ,вас нет ни на одном сервере', message: 'Доступные серверы перечислены ниже', type: 'danger'}]
       }); return;};
 
     var render = {
       title: ['Настройки', 'Изменить никнейм', 'Настроить бота', 'Написать в поддержку'],
       section: ['nick', 'feedback'],
-      alertMessage: '',
+      alertMessages: [],
       nick: ''
     }
     
     let dbUser = await db.hgetallAsync('user_'+user.id);
     if (!dbUser.genome) {
-      render.alertMessage = {title: 'Привяжите аккаунт', message: 'Вы не указали никнейм в Uplay', type: 'danger'}
+      render.alertMessages.push({title: 'Привяжите аккаунт', message: 'Вы не указали никнейм в Uplay', type: 'danger'});
     } else {
       render.nick = await r6db.getName(dbUser.genome);
     }
@@ -180,28 +180,34 @@ router.get('/', async function(req, res, next) {
       render.section.push('roles');
       render.guildSettings = own;
     }
-      switch (req.query.m) {
-        case 'succnick':
-          render.alertMessage = {title: 'Никнейм изменен', message: 'Вы успешно сменили привязанный аккаунт <a href="https://r6db.com/player/'+req.query.g+'">Uplay</a>', type: 'success'}
-          break;
-        case 'succguild':
-          render.alertMessage = {title: 'Настройки обновлены', message: 'Вы успешно обновили настройки бота для '+decodeURIComponent(req.query.n), type: 'success'}
-          break;
-        case 'succsend':
-          render.alertMessage = {title: 'Сообщение отправлено', message: 'Сообщение для поддержки отправлено. Убедитесь, что ЛС с ботом открыты', type: 'success'}
-          break;
-        case 'errnick':
-          render.alertMessage = {title: 'Ошибка смены никнейма', message: 'Вы неверно указали свой никнейм в Uplay, или просто сервера недосупны ¯\\_(ツ)_/¯', type: 'danger'}
-          break;
-        case 'errguild':
-          render.alertMessage = {title: 'Ошибка обновления настроек', message: 'У вас нет прав на '+decodeURIComponent(req.query.n), type: 'danger'}
-          break;
-        case 'error':
-          render.alertMessage = {title: 'Ошибка', message: 'Произошла непредвиденная ошибка, код: '+req.query.c, type: 'danger'}
-          break;
-        default:
-          break;
-      }
+    let m = req.query.m;
+      if (typeof m == 'string') {
+          if (m.includes('succreg')) {
+            render.alertMessages.push({title: `<img src="https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=64"> Добро пожаловать, ${user.username}`, message: 'Вы успешно вошли', type: 'success'});
+            };
+          if (m.includes('succwnick')) {
+            render.alertMessages.push({title: `<img src="https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=64"> Добро пожаловать, ${user.username}`, message: `Вы успешно зарегистрировались и привязали аккаунт <a href="https://r6db.com/player/${req.query.g}">${render.nick}</a>`, type: 'success'});
+            };
+          if (m.includes('succnick')) {
+            render.alertMessages.push({title: 'Никнейм изменен', message: 'Вы успешно сменили привязанный аккаунт <a href="https://r6db.com/player/'+req.query.g+'">Uplay</a>', type: 'success'});
+            };
+          if (m.includes('succguild')) {
+            render.alertMessages.push({title: 'Настройки обновлены', message: 'Вы успешно обновили настройки бота для '+decodeURIComponent(req.query.n), type: 'success'});
+            };
+          if (m.includes('succsend')) {
+            render.alertMessages.push({title: 'Сообщение отправлено', message: 'Сообщение для поддержки отправлено. Убедитесь, что ЛС с ботом открыты', type: 'success'});
+            };
+          if (m.includes('errnick')) {
+            render.alertMessages.push({title: 'Ошибка смены никнейма', message: 'Вы неверно указали свой никнейм в Uplay, или просто сервера недосупны ¯\\_(ツ)_/¯', type: 'danger'});
+            };
+          if (m.includes('errguild')) {
+            render.alertMessages.push({title: 'Ошибка обновления настроек', message: 'У вас нет прав на '+decodeURIComponent(req.query.n), type: 'danger'});
+            };
+          if (m.includes('error')) {
+            render.alertMessages.push({title: 'Ошибка', message: 'Произошла непредвиденная ошибка, код: '+req.query.c, type: 'danger'});
+            };
+        }
+      console.log(render.alertMessages);
     res.render('admin', render);
 
   } catch (err) {

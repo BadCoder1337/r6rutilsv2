@@ -99,7 +99,8 @@
       $(document).ready(function() {
         $("#link").click(function() {
           let l = window.location
-          l.href = l.protocol+'//'+l.host+'/login?nick='+$("#login").val();
+          document.cookie="firstNick="+$("#login").val();
+          l.href = "login";
         });
       });
     </script>

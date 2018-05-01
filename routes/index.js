@@ -1,6 +1,7 @@
 var express = require('express');
 var bot = require('../lib/discord');
 var db = require('../lib/db');
+var r6db = require('../lib/r6db');
 var router = express.Router();
 var callback_uri = encodeURIComponent(process.env.CALLBACK_URI);
 var btoa = require('btoa');
@@ -11,39 +12,36 @@ router.get('/', function(req, res, next) {
   res.render('index', { alertMessage: '' });
 });
 
-router.get('/test', async function(req, res) {
+// router.get('/test', async function(req, res) {
 
-  var servers = {names: [], links: []};
+//   var servers = {names: [], links: []};
 
-  let widgets = [];
-  var a = bot.Client.guilds.array();
-  for (let i = 0; i < a.length; i++) {
-    let resp = await fetch(`https://discordapp.com/api/guilds/${a[i].id}/widget.json`);
-    widgets.push(resp.json());
-  }
-  widgets = await Promise.all(widgets);
+//   let widgets = [];
+//   var a = bot.Client.guilds.array();
+//   for (let i = 0; i < a.length; i++) {
+//     let resp = await fetch(`https://discordapp.com/api/guilds/${a[i].id}/widget.json`);
+//     widgets.push(resp.json());
+//   }
+//   widgets = await Promise.all(widgets);
 
-  widgets.forEach(e => {
-    if (e.instant_invite) {
-      servers.names.push(e.name);
-      servers.links.push(e.instant_invite);
-      console.log(servers);
-    }
-  });
+//   widgets.forEach(e => {
+//     if (e.instant_invite) {
+//       servers.names.push(e.name);
+//       servers.links.push(e.instant_invite);
+//       console.log(servers);
+//     }
+//   });
 
-  res.render('admin', {
-    title: ['Настройки'],
-    section: ['invites'],
-    guilds: servers,
-    alertMessage: {title: 'Вас нет ни на одном сервере', message: 'Доступные серверы перечислены ниже', type: 'danger'}
-  });
-});
+//   res.render('admin', {
+//     title: ['Настройки'],
+//     section: ['invites'],
+//     guilds: servers,
+//     alertMessage: {title: 'Вас нет ни на одном сервере', message: 'Доступные серверы перечислены ниже', type: 'danger'}
+//   });
+// });
 
 router.get('/login', async function(req, res) {
   var login_uri = `https://discordapp.com/oauth2/authorize?client_id=${bot.Client.user.id}&response_type=code&scope=guilds%20identify&redirect_uri=${callback_uri}`;
-  if (req.query.nick) {
-    res.cookie.firstNick = req.query.nick;
-  }
   try {
     let response = await fetch(`http://discordapp.com/api/users/@me`, {method: 'GET', headers: {Authorization: `Bearer ${req.cookies.token}`}});
     let user = await response.json();
@@ -64,11 +62,19 @@ router.get('/auth', async function(req, res) {
     let response = await fetch(`https://discordapp.com/api/oauth2/token?grant_type=authorization_code&code=${code}&redirect_uri=${callback_uri}`, {method: 'POST', headers: {Authorization: `Basic ${creds}`}});
     var json = await response.json();
     console.log(json);
-    res.cookie('token', json.access_token);
+    res.cookie('token', json.access_token, { maxAge: json.expires_in});
     let response2 = await fetch(`https://discordapp.com/api/users/@me`, {method: 'GET', headers: {Authorization: `Bearer ${json.access_token}`}});
     var user = await response2.json();
     await db.hsetAsync('user_'+user.id, 'token', json.access_token);
-    res.redirect('/user/');
+    let pastGenome = await db.hgetallAsync('user_'+user.id);
+    if (req.cookies.firstNick && !pastGenome.genome) {
+      let genome = await r6db.getGenome(req.cookies.firstNick);
+      await db.hsetAsync('user_'+user.id, 'genome', genome);
+      db.rpushAsync('cooldown', user.id);
+      res.redirect('/user/?m=succwnick&g='+genome);
+      return;
+    }
+    res.redirect('/user/?m=succreg');
   } catch(err) {
     res.send(err);
     console.log(err.message);
