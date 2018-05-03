@@ -24,21 +24,21 @@
       <% }) %>
 
     <% if(section.indexOf('invites')!=-1) { %>
-      <%- include('form-invites', {guilds: guilds}) %>
+      <%- include('form/invites', {guilds: guilds}) %>
     <% } %>
 
     <% if(section.indexOf('nick')!=-1) { %>
-      <%- include('form-nick', {nickname: nick}) %>
+      <%- include('form/nick', {nickname: nick}) %>
     <% } %>
 
     <% if(section.indexOf('roles')!=-1) { %>
       <% guildSettings.forEach(e => { %>
-        <%- include('form-roles', {guildSettings: e}) %>
+        <%- include('form/roles', {guildSettings: e}) %>
       <% }) %>
     <% } %>
 
     <% if(section.indexOf('feedback')!=-1) { %>
-      <%- include('form-feedback') %>
+      <%- include('form/feedback') %>
     <% } %>
   </body>
 </html>

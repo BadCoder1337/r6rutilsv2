@@ -77,9 +77,13 @@ router.post('/feedback', async function(req, res) {
     if (!req.body.feedback) {res.redirect('/user/'); return}
 
     let dm = bot.Client.users.get(process.env.SUPPORT_ID);
-    if (dm) {dm.send(user.id+'\n'+user.username+'#'+user.discriminator+'\n\n'+req.body.feedback);}
-
-    res.redirect('/user/?m=succsend');
+    let msg = user.id+'\n'+user.username+'#'+user.discriminator+'\n\n'+req.body.feedback;
+    if (msg.length <= 1900) {
+      dm.send(msg);
+      res.redirect('/user/?m=succsend');
+    } else {
+      res.redirect('/user/?m=errsend');
+    }
 
   } catch (err) {
     switch (err.name) {
@@ -203,6 +207,9 @@ router.get('/', async function(req, res, next) {
           if (m.includes('errguild')) {
             render.alertMessages.push({title: 'Ошибка обновления настроек', message: 'У вас нет прав на '+decodeURIComponent(req.query.n), type: 'danger'});
             };
+          if (m.includes('errsend')) {
+            render.alertMessages.push({title: 'Сообщение не отправлено', message: 'Нельзя отправить более 1900 символов', type: 'danger'});
+          }
           if (m.includes('error')) {
             render.alertMessages.push({title: 'Ошибка', message: 'Произошла непредвиденная ошибка, код: '+req.query.c, type: 'danger'});
             };
