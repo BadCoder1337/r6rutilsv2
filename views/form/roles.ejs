@@ -3,7 +3,20 @@
     <% return b.calculatedPosition - a.calculatedPosition; %>
 <% }); %>
 <% var settings = guildSettings.settings; %>
-
+<% function invertColor(hex) {
+    if (hex.indexOf('#') === 0) {
+        hex = hex.slice(1);
+    }
+    if (hex.length === 3) {
+        hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+    }
+    var r = parseInt(hex.slice(0, 2), 16),
+        g = parseInt(hex.slice(2, 4), 16),
+        b = parseInt(hex.slice(4, 6), 16);
+        return (r * 0.299 + g * 0.587 + b * 0.114) > 186
+            ? '#000000'
+            : '#FFFFFF';
+} %>
     <form action="/user/roles?id=<%- guildSettings.guild.id %>" method="post">
     <table class="table table-bordered">
       <thead>
@@ -13,90 +26,26 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>Diamond</td>
-          <td><select class="form-control" name="Diamond">
+        <%  Object.keys(settings).forEach(elem => {
+          if (elem == 'diamondStab') {return;} %>
+          <tr>
+          <td><%- elem %></td>
+          <td><select class="form-control" name="<%- elem %>">
             <% roles.forEach((e, i, a) => { %>
-                <% if((i+1 == a.length && !settings.Diamond) || e.id == settings.Diamond) { %>
-                  <option selected value="<%= e.id%>"><%= e.name %></option>
+              <% if (e.hexColor != '#000000') {
+                var color = e.hexColor;
+              } else {
+                var color = '#FFFFFF';
+              } %>
+                <% if((i+1 == a.length && !settings[elem]) || e.id == settings[elem]) { %>
+                  <option style="color: <%= invertColor(color) %>; background-color: <%= color %>" selected value="<%= e.id %>"><%= e.name %></option>
                 <% } else { %>
-                  <option value="<%= e.id%>"><%= e.name %></option>
+                  <option style="color: <%= invertColor(color) %>; background-color: <%= color %>" value="<%= e.id %>"><%= e.name %></option>
                 <% } %>
               <% }); %>
           </select></td>
         </tr>
-        <tr>
-          <td>Platinum</td>
-          <td><select class="form-control" name="Platinum">
-            <% roles.forEach((e, i, a) => { %>
-                <% if((i+1 == a.length && !settings.Platinum) || e.id == settings.Platinum) { %>
-                  <option selected value="<%= e.id%>"><%= e.name %></option>
-                <% } else { %>
-                  <option value="<%= e.id%>"><%= e.name %></option>
-                <% } %>
-              <% }); %>
-          </select></td>
-        </tr>
-        <tr>
-          <td>Gold</td>
-          <td><select class="form-control" name="Gold">
-            <% roles.forEach((e, i, a) => { %>
-                <% if((i+1 == a.length && !settings.Gold) || e.id == settings.Gold) { %>
-                  <option selected value="<%= e.id%>"><%= e.name %></option>
-                <% } else { %>
-                  <option value="<%= e.id%>"><%= e.name %></option>
-                <% } %>
-              <% }); %>
-          </select></td>
-        </tr>
-        <tr>
-          <td>Silver</td>
-          <td><select class="form-control" name="Silver">
-            <% roles.forEach((e, i, a) => { %>
-                <% if((i+1 == a.length && !settings.Silver) || e.id == settings.Silver) { %>
-                  <option selected value="<%= e.id%>"><%= e.name %></option>
-                <% } else { %>
-                  <option value="<%= e.id%>"><%= e.name %></option>
-                <% } %>
-              <% }); %>
-          </select></td>
-        </tr>
-        <tr>
-          <td>Bronze</td>
-          <td><select class="form-control" name="Bronze">
-            <% roles.forEach((e, i, a) => { %>
-                <% if((i+1 == a.length && !settings.Bronze) || e.id == settings.Bronze) { %>
-                  <option selected value="<%= e.id%>"><%= e.name %></option>
-                <% } else { %>
-                  <option value="<%= e.id%>"><%= e.name %></option>
-                <% } %>
-              <% }); %>
-          </select></td>
-        </tr>
-        <tr>
-          <td>Copper</td>
-          <td><select class="form-control" name="Copper">
-            <% roles.forEach((e, i, a) => { %>
-                <% if((i+1 == a.length && !settings.Copper) || e.id == settings.Copper) { %>
-                  <option selected value="<%= e.id%>"><%= e.name %></option>
-                <% } else { %>
-                  <option value="<%= e.id%>"><%= e.name %></option>
-                <% } %>
-              <% }); %>
-          </select></td>
-        </tr>
-        <tr>
-          <td>Unranked</td>
-          <td><select class="form-control" name="Unranked">
-            <% roles.forEach((e, i, a) => { %>
-                <% if((i+1 == a.length && !settings.Unranked) || e.id == settings.Unranked) { %>
-                  <option selected value="<%= e.id%>"><%= e.name %></option>
-                <% } else { %>
-                  <option value="<%= e.id%>"><%= e.name %></option>
-                <% } %>
-              <% }); %>
-          </select></td>
-        </tr>
+        <% }); %>
         <tr>
           <td><h5>Игнорировать снижение звания после достижения Diamond?</h5></td>
           <td><select class="form-control" name="diamondStab">
