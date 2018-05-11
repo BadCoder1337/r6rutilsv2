@@ -83,7 +83,7 @@ router.get('/auth', async function(req, res) {
 });
 
 router.post('/payment', async function(req, res) {
-  console.log(req.query);
+  console.log(req.body);
   console.log(req);
   res.status(200)  
 })
