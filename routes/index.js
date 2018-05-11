@@ -82,4 +82,10 @@ router.get('/auth', async function(req, res) {
   }
 });
 
+router.post('/payment', async function(req, res) {
+  console.log(req.query);
+  console.log(req);
+  res.status(200)  
+})
+
 module.exports = router;
