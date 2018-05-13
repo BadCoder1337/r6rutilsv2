@@ -13,8 +13,8 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/login', async function(req, res) {
+  const login_uri = `https://discordapp.com/oauth2/authorize?client_id=${bot.Client.user.id}&response_type=code&scope=guilds%20identify&redirect_uri=${encodeURIComponent(process.env.CALLBACK_URI)}`;
   try {
-    const login_uri = `https://discordapp.com/oauth2/authorize?client_id=${bot.Client.user.id}&response_type=code&scope=guilds%20identify&redirect_uri=${encodeURIComponent(process.env.CALLBACK_URI)}`;
     let response = await fetch(`http://discordapp.com/api/users/@me`, {method: 'GET', headers: {Authorization: `Bearer ${req.cookies.token}`}});
     let user = await response.json();
     if (user.code === 0) {
