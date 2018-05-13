@@ -5,7 +5,6 @@ const r6db = require('../lib/r6db');
 const router = express.Router();
 const btoa = require('btoa');
 const fetch = require('node-fetch');
-const login_uri = `https://discordapp.com/oauth2/authorize?client_id=${bot.Client.user.id}&response_type=code&scope=guilds%20identify&redirect_uri=${encodeURIComponent(process.env.CALLBACK_URI)}`;
 const crypto = require('crypto');
 
 /* GET home page. */
@@ -27,6 +26,7 @@ router.get('/login', async function(req, res) {
 });
 
 router.get('/auth', async function(req, res) {
+  const login_uri = `https://discordapp.com/oauth2/authorize?client_id=${bot.Client.user.id}&response_type=code&scope=guilds%20identify&redirect_uri=${encodeURIComponent(process.env.CALLBACK_URI)}`;
   try {
     if (!req.query.code) {res.redirect('/')};
     let code = req.query.code;
