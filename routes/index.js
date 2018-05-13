@@ -14,6 +14,7 @@ router.get('/', function(req, res, next) {
 
 router.get('/login', async function(req, res) {
   try {
+    const login_uri = `https://discordapp.com/oauth2/authorize?client_id=${bot.Client.user.id}&response_type=code&scope=guilds%20identify&redirect_uri=${encodeURIComponent(process.env.CALLBACK_URI)}`;
     let response = await fetch(`http://discordapp.com/api/users/@me`, {method: 'GET', headers: {Authorization: `Bearer ${req.cookies.token}`}});
     let user = await response.json();
     if (user.code === 0) {
@@ -26,12 +27,11 @@ router.get('/login', async function(req, res) {
 });
 
 router.get('/auth', async function(req, res) {
-  const login_uri = `https://discordapp.com/oauth2/authorize?client_id=${bot.Client.user.id}&response_type=code&scope=guilds%20identify&redirect_uri=${encodeURIComponent(process.env.CALLBACK_URI)}`;
   try {
     if (!req.query.code) {res.redirect('/')};
     let code = req.query.code;
     let creds = btoa(`${bot.Client.user.id}:${process.env.DISCORD_SECRET}`);
-    let response = await fetch(`https://discordapp.com/api/oauth2/token?grant_type=authorization_code&code=${code}&redirect_uri=${callback_uri}`, {method: 'POST', headers: {Authorization: `Basic ${creds}`}});
+    let response = await fetch(`https://discordapp.com/api/oauth2/token?grant_type=authorization_code&code=${code}&redirect_uri=${encodeURIComponent(process.env.CALLBACK_URI)}`, {method: 'POST', headers: {Authorization: `Basic ${creds}`}});
     let json = await response.json();
     console.log(json);
     res.cookie('token', json.access_token, { maxAge: json.expires_in});
