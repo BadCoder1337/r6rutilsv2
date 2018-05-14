@@ -27,7 +27,7 @@
       </thead>
       <tbody>
         <%  Object.keys(settings).forEach(elem => {
-          if (['diamondStab', 'payed'].includes(e)) {return;} %>
+          if (['diamondStab', 'payed'].includes(elem)) {return;} %>
           <tr>
           <td><%- elem %></td>
           <td><select class="form-control" name="<%- elem %>">
