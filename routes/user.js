@@ -77,7 +77,7 @@ router.post('/feedback', async function(req, res) {
     if (!req.body.feedback) {res.redirect('/user/'); return}
 
     let dm = bot.Client.users.get(process.env.SUPPORT_ID);
-    let msg = user.id+'\n'+user.username+'#'+user.discriminator+'\n\n'+req.body.feedback;
+    let msg = user.id+'\n'+user.username+'#'+user.discriminator+'\n\n'+req.body.feedback+'\n(с сайта)';
     if (msg.length <= 1900) {
       dm.send(msg);
       res.redirect('/user/?m=succsend');
