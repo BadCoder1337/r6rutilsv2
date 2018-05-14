@@ -59,6 +59,7 @@ router.post('/payment', async function(req, res) {
   let hash = crypto.createHash('sha1').update(`${b.notification_type}&${b.operation_id}&${b.amount}&${b.currency}&${b.datetime}&${b.sender}&${b.codepro}&${process.env.YANDEX_SECRET}&${b.label}`).digest('hex');
   if (b.unaccepted == 'false' && hash == b.sha1_hash && b.amount > process.env.PRICE) {
     db.hsetAsync('guild_'+b.label, 'payed', 1);
+    db.hsetAsync('guild_'+b.label, 'paymentTime', new Date().toUTCString());
   }
   res.status(200);
 })
