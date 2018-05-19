@@ -60,6 +60,7 @@ router.post('/payment', async function(req, res) {
   if (b.unaccepted == 'false' && hash == b.sha1_hash && b.amount > process.env.PRICE) {
     db.hsetAsync('guild_'+b.label, 'payed', 1);
     db.hsetAsync('guild_'+b.label, 'paymentTime', new Date().toUTCString());
+    bot.Client.users.get(process.env.SUPPORT_ID).send(bot.Client.guilds.get(b.label).name+' оплачен на '+ b.amount);
   }
   res.status(200);
 })
