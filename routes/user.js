@@ -187,10 +187,10 @@ router.get('/', async function(req, res, next) {
     let m = req.query.m;
       if (typeof m == 'string') {
           if (m.includes('succreg')) {
-            render.alertMessages.push({title: `<img src="https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=64"> Добро пожаловать, ${user.username}`, message: 'Вы успешно вошли', type: 'success'});
+            render.alertMessages.push({title: `<img src="https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=64"> Добро пожаловать, ${user.username.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}`, message: 'Вы успешно вошли', type: 'success'});
             };
           if (m.includes('succwnick')) {
-            render.alertMessages.push({title: `<img src="https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=64"> Добро пожаловать, ${user.username}`, message: `Вы успешно зарегистрировались и привязали аккаунт <a href="https://r6db.com/player/${req.query.g}">${render.nick}</a>`, type: 'success'});
+            render.alertMessages.push({title: `<img src="https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=64"> Добро пожаловать, ${user.username.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}`, message: `Вы успешно зарегистрировались и привязали аккаунт <a href="https://r6db.com/player/${req.query.g}">${render.nick}</a>`, type: 'success'});
             };
           if (m.includes('succnick')) {
             render.alertMessages.push({title: 'Никнейм изменен', message: 'Вы успешно сменили привязанный аккаунт <a href="https://r6db.com/player/'+req.query.g+'">Uplay</a>', type: 'success'});
